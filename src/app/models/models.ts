@@ -40,7 +40,7 @@ export interface Rental {
   startDate: string;
   endDate: string;
   totalCost: number;
-  status: string;
+  status: 'Oczekujaca' | 'Zatwierdzona' | 'Odrzucona' | 'Aktywna' | 'Zakonczona' | 'Anulowana';
   createdAt: string;
 }
 

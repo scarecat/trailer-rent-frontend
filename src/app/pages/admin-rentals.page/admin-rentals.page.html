@@ -1,0 +1,118 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <h1>Panel Administratora</h1>
+    <h2>Zarządzanie rezerwacjami</h2>
+  </div>
+
+  <!-- Statystyki -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ pendingCount() }}</div>
+      <div class="stat-label">Oczekujące</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-value">
+        {{ allRentals().filter((r) => r.status === 'Zatwierdzona').length }}
+      </div>
+      <div class="stat-label">Zatwierdzone</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ allRentals().filter((r) => r.status === 'Aktywna').length }}</div>
+      <div class="stat-label">Aktywne</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ allRentals().length }}</div>
+      <div class="stat-label">Wszystkie</div>
+    </mat-card>
+  </div>
+
+  <!-- Tabs -->
+  <mat-tab-group (selectedIndexChange)="onTabChange($event)" class="rental-tabs">
+    @for (tab of tabs; track tab.label) {
+      <mat-tab [label]="tab.label"></mat-tab>
+    }
+  </mat-tab-group>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !hasRentals()) {
+    <mat-card class="empty-card">
+      <p>Brak rezerwacji</p>
+    </mat-card>
+  }
+
+  <!-- Rentals list -->
+  @if (!loading() && hasRentals()) {
+    <div class="rentals-list">
+      @for (rental of filteredRentals(); track trackByRentalId($index, rental)) {
+        <mat-card class="rental-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{ rental.trailerInfo }}
+            </mat-card-title>
+            <mat-card-subtitle> Rezerwacja #{{ rental.id }} </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="details-grid">
+              <!-- Dane klienta -->
+              <div class="detail-section">
+                <div class="section-title">Klient</div>
+                <div class="section-content">{{ rental.userFullName }}</div>
+                <div class="section-subcontent">{{ formatDateTime(rental.createdAt) }}</div>
+              </div>
+
+              <!-- Okres wypożyczenia -->
+              <div class="detail-section">
+                <div class="section-title">Okres wypożyczenia</div>
+                <div class="section-content">
+                  {{ formatDate(rental.startDate) }} - {{ formatDate(rental.endDate) }}
+                </div>
+                <div class="section-subcontent">
+                  {{ calculateDays(rental.startDate, rental.endDate) }} dni
+                </div>
+              </div>
+
+              <!-- Koszt -->
+              <div class="detail-section">
+                <div class="section-title">Koszt</div>
+                <div class="cost-value">{{ rental.totalCost | number: '1.2-2' }} PLN</div>
+              </div>
+
+              <!-- Status -->
+              <div class="detail-section">
+                <div class="section-title">Status</div>
+                <mat-chip [color]="getStatusColor(rental.status)" highlighted>
+                  {{ rental.status }}
+                </mat-chip>
+              </div>
+            </div>
+          </mat-card-content>
+
+          <!-- Actions -->
+          @if (canApprove(rental) || canReject(rental)) {
+            <mat-card-actions align="end" class="card-actions">
+              @if (canApprove(rental)) {
+                <button mat-raised-button color="primary" (click)="approveRental(rental)">
+                  Zatwierdź
+                </button>
+              }
+              @if (canReject(rental)) {
+                <button mat-raised-button color="warn" (click)="rejectRental(rental)">
+                  Odrzuć
+                </button>
+              }
+            </mat-card-actions>
+          }
+        </mat-card>
+      }
+    </div>
+  }
+</div>

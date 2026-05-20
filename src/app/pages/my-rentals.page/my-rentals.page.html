@@ -1,0 +1,199 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Moje wypożyczenia</h1>
+      <div class="stats-badges">
+        @if (activeCount() > 0) {
+          <mat-chip class="active-chip" color="primary" highlighted>
+            <mat-icon>play_circle</mat-icon>
+            Aktywne: {{ activeCount() }}
+          </mat-chip>
+        }
+        @if (pendingCount() > 0) {
+          <mat-chip class="pending-chip" color="accent" highlighted>
+            <mat-icon>hourglass_empty</mat-icon>
+            Oczekujące: {{ pendingCount() }}
+          </mat-chip>
+        }
+      </div>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/trailers" class="new-rental-btn">
+      <mat-icon>add</mat-icon>
+      Nowe wypożyczenie
+    </button>
+  </div>
+
+  <!-- Filters section with mat-select -->
+  <div class="filters-section">
+    <div class="filter-row">
+      <mat-form-field appearance="outline" class="status-select">
+        <mat-label>Filtruj po statusie</mat-label>
+        <mat-select [value]="selectedStatus()" (selectionChange)="onStatusChange($event.value)">
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">
+              <div class="select-option">
+                <span>{{ option.label }}</span>
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (selectedStatus() !== 'ALL') {
+        <button mat-stroked-button (click)="onStatusChange('ALL')" class="clear-filter-btn">
+          <mat-icon>clear</mat-icon>
+          Wyczyść filtr
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="spinner-wrapper">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Ładowanie wypożyczeń...</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !hasRentals()) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">inventory_2</mat-icon>
+      <h2>Brak wypożyczeń</h2>
+      <p>Nie masz jeszcze żadnych wypożyczeń</p>
+      <button mat-raised-button color="primary" routerLink="/trailers">
+        <mat-icon>local_shipping</mat-icon>
+        Przeglądaj przyczepy
+      </button>
+    </div>
+  }
+
+  <!-- Rentals grid -->
+  @if (!loading() && hasRentals()) {
+    <div class="rentals-grid">
+      @for (rental of filteredRentals(); track trackByRentalId($index, rental)) {
+        @let trailerInfo = parseTrailerInfo(rental.trailerInfo);
+
+        <mat-card
+          class="rental-card"
+          [class.cancelled]="rental.status === 'Anulowana' || rental.status === 'Odrzucona'"
+        >
+          <!-- Card Header -->
+          <mat-card-header>
+            <div mat-card-avatar class="trailer-avatar">
+              <mat-icon>local_shipping</mat-icon>
+            </div>
+            <mat-card-title>
+              {{ trailerInfo.brand }} {{ trailerInfo.model }}
+              <mat-chip [color]="getStatusColor(rental.status)" highlighted>
+                <mat-icon>{{ getStatusIcon(rental.status) }}</mat-icon>
+                {{ rental.status }}
+              </mat-chip>
+            </mat-card-title>
+            <mat-card-subtitle>
+              <mat-icon>confirmation_number</mat-icon>
+              Numer rezerwacji: #{{ rental.id }}
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <!-- Rental details -->
+            <div class="rental-details">
+              <div class="detail-row">
+                <mat-icon>event</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Okres wypożyczenia:</span>
+                  <span class="value">
+                    {{ formatDate(rental.startDate) }} - {{ formatDate(rental.endDate) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon>today</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Liczba dni:</span>
+                  <span class="value">{{ calculateDays(rental.startDate, rental.endDate) }}</span>
+                </div>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon>attach_money</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Koszt całkowity:</span>
+                  <span class="value highlight">{{ rental.totalCost | number: '1.2-2' }} PLN</span>
+                </div>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon>directions_car</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Przyczepa:</span>
+                  <span class="value clickable" (click)="navigateToTrailer(rental.trailerId)">
+                    {{ rental.trailerInfo }}
+                    <mat-icon class="small-icon">open_in_new</mat-icon>
+                  </span>
+                </div>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon>person</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Wypożyczający:</span>
+                  <span class="value">{{ rental.userFullName }}</span>
+                </div>
+              </div>
+
+              <div class="detail-row">
+                <mat-icon>date_range</mat-icon>
+                <div class="detail-info">
+                  <span class="label">Data rezerwacji:</span>
+                  <span class="value">{{ formatDate(rental.createdAt) }}</span>
+                </div>
+              </div>
+
+              <!-- Date info badges -->
+              <div class="date-badges">
+                @if (isStartingSoon(rental)) {
+                  <mat-chip color="accent" selected size="small">
+                    <mat-icon>schedule</mat-icon>
+                    {{ getStartDateBadgeText(rental) }}
+                  </mat-chip>
+                }
+                @if (isActive(rental)) {
+                  <mat-chip color="primary" selected size="small">
+                    <mat-icon>play_circle</mat-icon>
+                    W trakcie
+                  </mat-chip>
+                }
+                @if (isCompleted(rental)) {
+                  <mat-chip selected size="small">
+                    <mat-icon>check_circle</mat-icon>
+                    Zakończone
+                  </mat-chip>
+                }
+              </div>
+            </div>
+          </mat-card-content>
+
+          <!-- Card Actions -->
+          @if (canCancel(rental)) {
+            <mat-card-actions align="end">
+              <button
+                mat-stroked-button
+                color="warn"
+                (click)="cancelRental(rental)"
+                matTooltip="Anuluj wypożyczenie"
+              >
+                <mat-icon>cancel</mat-icon>
+                Anuluj
+              </button>
+            </mat-card-actions>
+          }
+        </mat-card>
+      }
+    </div>
+  }
+</div>

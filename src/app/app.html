@@ -1,2 +1,9 @@
-<app-header></app-header>
+@if (loggedIn()) {
+  @if (admin()) {
+    <app-admin-toolbar></app-admin-toolbar>
+  } @else {
+    <app-user-toolbar></app-user-toolbar>
+  }
+}
+
 <router-outlet></router-outlet>

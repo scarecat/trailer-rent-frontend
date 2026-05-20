@@ -1,0 +1,23 @@
+<mat-toolbar
+  ><span>Wypożyczalnia</span>
+  <a routerLink="/logout" style="margin-left: auto">Wyloguj</a></mat-toolbar
+>
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <a
+    mat-tab-link
+    routerLinkActive
+    #rla="routerLinkActive"
+    routerLink="trailers"
+    [active]="rla.isActive"
+    >Użytkownicy</a
+  >
+  <a
+    mat-tab-link
+    routerLinkActive
+    #rla="routerLinkActive"
+    routerLink="rentals/my"
+    [active]="rla.isActive"
+    >Wypożyczenia</a
+  >
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>

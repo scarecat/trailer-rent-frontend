@@ -1,0 +1,155 @@
+<div class="admin-users-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Zarządzanie użytkownikami</h1>
+      <h2>Panel administratora</h2>
+    </div>
+  </div>
+
+  <!-- Statystyki -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ totalUsers() }}</div>
+      <div class="stat-label">Wszystkich użytkowników</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ userCount() }}</div>
+      <div class="stat-label">Użytkownicy</div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat-value">{{ adminCount() }}</div>
+      <div class="stat-label">Administratorzy</div>
+    </mat-card>
+  </div>
+
+  <!-- Search -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Szukaj użytkownika</mat-label>
+          <input
+            matInput
+            formControlName="search"
+            placeholder="Imię, nazwisko, email lub telefon"
+          />
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && filteredUsers().length > 0) {
+    <mat-card class="table-card">
+      <mat-card-content>
+        <div class="table-responsive">
+          <table mat-table [dataSource]="getPaginatedData()" class="users-table">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+            </ng-container>
+
+            <!-- Full Name Column -->
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef>Imię i nazwisko</th>
+              <td mat-cell *matCellDef="let user">
+                {{ user.firstName }} {{ user.lastName }}
+                @if (!user.isActive) {
+                  <mat-chip size="small" color="warn" selected>Zablokowany</mat-chip>
+                }
+              </td>
+            </ng-container>
+
+            <!-- Email Column -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+            </ng-container>
+
+            <!-- Phone Column -->
+            <ng-container matColumnDef="phoneNumber">
+              <th mat-header-cell *matHeaderCellDef>Telefon</th>
+              <td mat-cell *matCellDef="let user">{{ user.phoneNumber }}</td>
+            </ng-container>
+
+            <!-- Role Column -->
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef>Rola</th>
+              <td mat-cell *matCellDef="let user">
+                <mat-chip [color]="getRoleColor(user.role)" highlighted>
+                  {{ user.role }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <!-- Created At Column -->
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>Data rejestracji</th>
+              <td mat-cell *matCellDef="let user">{{ formatDate(user.createdAt) }}</td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Akcje</th>
+              <td mat-cell *matCellDef="let user">
+                <div class="action-buttons">
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="editUser(user)"
+                    matTooltip="Edytuj"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="resetPassword(user)" matTooltip="Resetuj hasło">
+                    <mat-icon>vpn_key</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    [color]="user.isActive ? 'warn' : 'primary'"
+                    (click)="toggleUserStatus(user)"
+                    matTooltip="{{ user.isActive ? 'Zablokuj' : 'Odblokuj' }}"
+                  >
+                    <mat-icon>{{ user.isActive ? 'block' : 'check_circle' }}</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteUser(user)" matTooltip="Usuń">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+
+        <!-- Paginator -->
+        <mat-paginator
+          [length]="filteredUsers().length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && filteredUsers().length === 0) {
+    <mat-card class="empty-card">
+      <p>Nie znaleziono użytkowników</p>
+    </mat-card>
+  }
+</div>

@@ -1,18 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, DestroyRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AuthResponse, LoginDto, RegisterDto } from '../models/models';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private http = inject(HttpClient);
+
   private readonly TOKEN_KEY = 'token';
   private readonly USER_KEY = 'user';
 
-  private userSubject = new BehaviorSubject<AuthResponse | null>(this.loadUser());
-  user$ = this.userSubject.asObservable();
+  // Sygnały
+  private userSignal = signal<AuthResponse | null>(this.loadUser());
 
-  constructor(private http: HttpClient) {}
+  // Sygnały publiczne (tylko do odczytu)
+  public user = this.userSignal.asReadonly();
+
+  // Sygnały obliczeniowe
+  public isLoggedIn = computed(() => !!this.userSignal());
+  public isAdmin = computed(() => this.userSignal()?.role === 'Administrator');
+  public currentUser = computed(() => this.userSignal());
+  public token = computed(() => this.userSignal()?.token ?? null);
+
+  constructor() {
+    // Efekt do synchronizacji z localStorage (opcjonalny)
+    effect(() => {
+      const user = this.userSignal();
+      if (user) {
+        localStorage.setItem(this.TOKEN_KEY, user.token);
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+      } else {
+        localStorage.removeItem(this.TOKEN_KEY);
+        localStorage.removeItem(this.USER_KEY);
+      }
+    });
+  }
 
   private loadUser(): AuthResponse | null {
     const raw = localStorage.getItem(this.USER_KEY);
@@ -32,30 +55,10 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-    this.userSubject.next(null);
+    this.userSignal.set(null);
   }
 
   private setSession(res: AuthResponse): void {
-    localStorage.setItem(this.TOKEN_KEY, res.token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(res));
-    this.userSubject.next(res);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  isAdmin(): boolean {
-    return this.userSubject.value?.role === 'Administrator';
-  }
-
-  get currentUser(): AuthResponse | null {
-    return this.userSubject.value;
+    this.userSignal.set(res);
   }
 }

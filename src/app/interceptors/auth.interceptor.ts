@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).getToken();
+  const token = inject(AuthService).token();
   if (token) {
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }
