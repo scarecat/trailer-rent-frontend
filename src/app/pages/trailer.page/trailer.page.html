@@ -1,0 +1,85 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Dostepne przyczepy</h1>
+  </div>
+
+  <mat-card class="filter-card">
+    <form [formGroup]="filterForm" (ngSubmit)="load()" class="filter-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Typ przyczepy</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="">Wszystkie</mat-option>
+          @for (t of trailerTypes(); track t) {
+            <mat-option [value]="t">{{ typeLabel(t) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Maks. cena za dobe (PLN)</mat-label>
+        <input matInput type="number" formControlName="maxPrice" min="0" />
+      </mat-form-field>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" type="submit">Filtruj</button>
+        <button mat-stroked-button type="button" (click)="reset()">Resetuj</button>
+      </div>
+    </form>
+  </mat-card>
+
+  @if (loading()) {
+    <div class="spinner-wrapper">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  @if (!loading() && trailers().length === 0) {
+    <div class="empty-state">
+      <mat-icon>local_shipping</mat-icon>
+      <p>Brak dostepnych przyczep</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <div class="trailers-grid">
+      @for (t of trailers(); track t.id) {
+        <mat-card class="trailer-card">
+          <mat-card-header>
+            <mat-card-title>{{ t.brand }} {{ t.model }}</mat-card-title>
+            <mat-card-subtitle>{{ t.registrationNumber }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="trailer-details">
+              <div class="detail-row">
+                <span class="label">Typ:</span>
+                <span>{{ typeLabel(t.type) }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Ladownosc:</span>
+                <span>{{ t.loadCapacity }} kg</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Cena za dobe:</span>
+                <span class="price">{{ t.pricePerDay | number: '1.2-2' }} PLN</span>
+              </div>
+              @if (t.description) {
+                <div class="detail-row">
+                  <span class="label">Opis:</span>
+                  <span>{{ t.description }}</span>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="reserve(t)">
+              <mat-icon>event_available</mat-icon>
+              Zarezerwuj
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      } @empty {
+        <!-- Optional empty state inside the grid, but we already have one outside -->
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,83 @@
+<div class="rental-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Nowa rezerwacja</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading()) {
+        <div class="spinner-wrapper">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else if (trailer()) {
+        <div class="trailer-info">
+          <h3>{{ trailer()!.brand }} {{ trailer()!.model }}</h3>
+          <p>Cena za dobę: {{ trailer()!.pricePerDay | number: '1.2-2' }} PLN</p>
+          <mat-divider></mat-divider>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Data rozpoczęcia</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              formControlName="startDate"
+              [min]="minDate"
+            />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            @if (form.get('startDate')?.hasError('required') && form.get('startDate')?.touched) {
+              <mat-error>Data rozpoczęcia jest wymagana</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Data zakończenia</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              formControlName="endDate"
+              [min]="form.get('startDate')?.value || minDate"
+            />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            @if (form.get('endDate')?.hasError('required') && form.get('endDate')?.touched) {
+              <mat-error>Data zakończenia jest wymagana</mat-error>
+            }
+            @if (form.get('endDate')?.hasError('endDateBeforeStart')) {
+              <mat-error>Data zakończenia nie może być wcześniejsza niż data rozpoczęcia</mat-error>
+            }
+          </mat-form-field>
+
+          @if (estimatedDays() > 0) {
+            <div class="cost-summary">
+              <p>Liczba dni: {{ estimatedDays() }}</p>
+              <p>Szacowany koszt: {{ estimatedCost() | number: '1.2-2' }} PLN</p>
+            </div>
+          }
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="router.navigate(['/trailers'])">
+              Anuluj
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="submitting() || form.invalid"
+            >
+              @if (submitting()) {
+                <mat-spinner
+                  diameter="20"
+                  style="display: inline-block; margin-right: 8px"
+                ></mat-spinner>
+              }
+              Zarezerwuj
+            </button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
