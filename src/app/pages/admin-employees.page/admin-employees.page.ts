@@ -42,7 +42,7 @@ import { finalize } from 'rxjs';
         <h1>Pracownicy</h1>
         <p>Zarządzanie kontami pracowników</p>
       </div>
-      <button mat-raised-button routerLink="/admin/add-employee"> Dodaj pracownika </button>
+      <button mat-raised-button routerLink="/admin/employees/add"> Dodaj pracownika </button>
       </div>
 
       <!-- Search -->
