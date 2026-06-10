@@ -13,6 +13,9 @@ import { AdminRentalsPage } from './pages/admin-rentals.page/admin-rentals.page'
 import { ProfilePage } from './pages/profile.page/profile.page';
 import { AdminClientsPage } from './pages/admin-clients.page/admin-clients.page';
 import { AdminEmployeesPage } from './pages/admin-employees.page/admin-employees.page';
+import { AdminAddTrailerPage } from './pages/admin-add-trailer.page/admin-add-trailer.page';
+import { AdminTrailersPage } from './pages/admin-trailers.page/admin-trailers.page';
+import { AdminEditTrailerPage } from './pages/admin-add-trailer.page/admin-edit-trailer.page';
 
 export const routes: Routes = [
   {
@@ -78,6 +81,21 @@ export const routes: Routes = [
       {
         path: 'employees',
         component: AdminEmployeesPage,
+      },
+      {
+        path: 'trailers',
+        pathMatch: 'full',
+        component: AdminTrailersPage,
+      },
+      {
+        path: 'trailers/add',
+        pathMatch: 'full',
+        component: AdminAddTrailerPage,
+      },
+      {
+        path: 'trailers/:id/edit',
+        pathMatch: 'full',
+        component: AdminEditTrailerPage,
       },
     ],
   },

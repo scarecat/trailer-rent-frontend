@@ -50,6 +50,17 @@ export interface Rental {
   createdAt: string;
 }
 
+export interface CreateTrailerDto {
+   brand: string,
+   model: string,
+   registrationNumber: string,
+   loadCapacity: number,
+   pricePerDay: number,
+   trailerType: "Cargo" | "Motorboat" | "Flatbed" | "Refrigerated" | "Other"
+   description?: string
+}
+
+
 export interface CreateRentalDto {
   trailerId: number;
   startDate: string;

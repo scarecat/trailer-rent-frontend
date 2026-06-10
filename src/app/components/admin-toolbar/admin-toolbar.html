@@ -22,6 +22,14 @@
   <a
     mat-tab-link
     routerLinkActive
+    #adminTrailersRla="routerLinkActive"
+    routerLink="admin/trailers"
+    [active]="adminTrailersRla.isActive"
+    >Przyczepy</a
+  >
+  <a
+    mat-tab-link
+    routerLinkActive
     #adminRentalsRla="routerLinkActive"
     routerLink="admin/rentals"
     [active]="adminRentalsRla.isActive"

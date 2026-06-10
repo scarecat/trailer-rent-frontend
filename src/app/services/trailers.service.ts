@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Trailer } from '../models/models';
+import { CreateTrailerDto, Trailer } from '../models/models';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -22,7 +22,7 @@ export class TrailersService {
     return this.http.get<Trailer>(`${this.url}/${id}`);
   }
 
-  create(dto: any): Observable<Trailer> {
+  create(dto: CreateTrailerDto): Observable<Trailer> {
     return this.http.post<Trailer>(this.url, dto);
   }
 
