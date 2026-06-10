@@ -18,6 +18,12 @@ export interface RegisterDto {
   phoneNumber: string;
 }
 
+export interface UpdateProfileDto {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+}
+
 export interface Trailer {
   id: number;
   brand: string;

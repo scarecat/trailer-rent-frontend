@@ -11,6 +11,7 @@ import { AuthService } from './services/auth.service';
 import { MyRentalsPage } from './pages/my-rentals.page/my-rentals.page';
 import { AdminRentalsPage } from './pages/admin-rentals.page/admin-rentals.page';
 import { AdminUsersPage } from './pages/admin-users.page/admin-users.page';
+import { ProfilePage } from './pages/profile.page/profile.page';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,11 @@ export const routes: Routes = [
     path: 'trailers',
     canActivate: [loggedInGuard],
     component: TrailerPage,
+  },
+  {
+    path: 'profile',
+    canActivate: [loggedInGuard],
+    component: ProfilePage,
   },
   {
     path: 'rentals',

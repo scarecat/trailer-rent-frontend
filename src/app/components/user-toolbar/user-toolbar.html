@@ -1,23 +1,29 @@
-<mat-toolbar
-  ><span>Wypożyczalnia</span>
-  <a routerLink="/logout" style="margin-left: auto">Wyloguj</a></mat-toolbar
->
+<mat-toolbar><span>Wypożyczalnia</span> </mat-toolbar>
+<!--<a routerLink="/profile" style="margin-left: auto">{{username()}}</a></mat-toolbar>-->
 <nav mat-tab-nav-bar [tabPanel]="tabPanel">
   <a
     mat-tab-link
     routerLinkActive
-    #rla="routerLinkActive"
+    #rlatrailers="routerLinkActive"
     routerLink="trailers"
-    [active]="rla.isActive"
-    >Użytkownicy</a
+    [active]="rlatrailers.isActive"
+    >Przyczepy</a
   >
   <a
     mat-tab-link
     routerLinkActive
-    #rla="routerLinkActive"
-    routerLink="rentals/my"
-    [active]="rla.isActive"
+    #rlarentals="routerLinkActive"
+    routerLink="/rentals/my"
+    [active]="rlarentals.isActive"
     >Wypożyczenia</a
+  >
+  <a
+    mat-tab-link
+    routerLinkActive
+    #rlaprofile="routerLinkActive"
+    routerLink="/profile"
+    [active]="rlaprofile.isActive"
+    >Profil</a
   >
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>

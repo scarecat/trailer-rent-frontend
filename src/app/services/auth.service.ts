@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed, effect, DestroyRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { AuthResponse, LoginDto, RegisterDto } from '../models/models';
+import { AuthResponse, LoginDto, RegisterDto, UpdateProfileDto, User } from '../models/models';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -54,11 +54,29 @@ export class AuthService {
       .pipe(tap((res) => this.setSession(res)));
   }
 
+  edit(dto: UpdateProfileDto): Observable<AuthResponse> {
+    return this.http
+      .put<AuthResponse>(`${environment.apiUrl}/auth/profile`, dto)
+      .pipe(tap((res) => this.setSession(res)));
+  }
+
+  getInfo(): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/auth/info`);
+  }
+
   logout(): void {
     this.userSignal.set(null);
   }
 
-  private setSession(res: AuthResponse): void {
+  delete(): Observable<object> {
+    return this.http.delete(`${environment.apiUrl}/auth`).pipe(
+      tap((_) => {
+        this.setSession(null);
+      }),
+    );
+  }
+
+  private setSession(res: AuthResponse | null): void {
     this.userSignal.set(res);
   }
 }
