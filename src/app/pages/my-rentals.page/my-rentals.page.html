@@ -178,9 +178,9 @@
             </div>
           </mat-card-content>
 
+          <mat-card-actions align="end">
           <!-- Card Actions -->
           @if (canCancel(rental)) {
-            <mat-card-actions align="end">
               <button
                 mat-stroked-button
                 color="warn"
@@ -190,8 +190,34 @@
                 <mat-icon>cancel</mat-icon>
                 Anuluj
               </button>
-            </mat-card-actions>
           }
+          <!--
+          @if (isActive(rental)) {
+              @if (trailerPickedUp(rental)) {
+              <button
+                mat-stroked-button
+                color="warn"
+                (click)="pickupTrailer(rental)"
+                matTooltip="Anuluj wypożyczenie"
+              >
+                <mat-icon>check</mat-icon>
+                Przyczepa odebrana
+              </button>
+            }
+              @else {
+              <button
+                mat-stroked-button
+                color="warn"
+                (click)="returnTrailer(rental)"
+                matTooltip="sygnalizuj oddanie przycepy"
+              >
+                <mat-icon>cancel</mat-icon>
+                Przyczepa oddania
+              </button>
+            }
+          }
+          -->
+          </mat-card-actions>
         </mat-card>
       }
     </div>
