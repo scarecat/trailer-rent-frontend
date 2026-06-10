@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -92,8 +92,8 @@ import { TrailersService } from '../../services/trailers.service';
 
               <mat-form-field appearance="outline">
                 <mat-label>Typ przyczepy</mat-label>
-                <mat-select formControlName="trailerType">
-                  @for (type of trailerTypes; track type.value) {
+                <mat-select formControlName="type">
+                  @for (type of types; track type.value) {
                     <mat-option [value]="type.value">
                       <span class="type-option">
                         <mat-icon class="type-icon">{{ type.icon }}</mat-icon>
@@ -102,7 +102,7 @@ import { TrailersService } from '../../services/trailers.service';
                     </mat-option>
                   }
                 </mat-select>
-                @if (form.get('trailerType')?.hasError('required') && form.get('trailerType')?.touched) {
+                @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
                   <mat-error>Typ przyczepy jest wymagany</mat-error>
                 }
               </mat-form-field>
@@ -178,7 +178,7 @@ import { TrailersService } from '../../services/trailers.service';
 
           <!-- Actions -->
           <div class="form-actions">
-            <button mat-stroked-button type="button" (click)="goBack()" [disabled]="loading">
+            <button mat-stroked-button type="button" (click)="goBack()" [disabled]="loading()">
               <mat-icon>close</mat-icon>
               Anuluj
             </button>
@@ -186,9 +186,9 @@ import { TrailersService } from '../../services/trailers.service';
               mat-flat-button
               type="submit"
               class="submit-btn"
-              [disabled]="loading || form.invalid"
+              [disabled]="loading() || form.invalid"
             >
-              @if (loading) {
+              @if (loading()) {
                 <mat-spinner diameter="18" color="accent" />
                 Zapisywanie...
               } @else {
@@ -366,9 +366,9 @@ export class AdminAddTrailerPage {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-  loading = false;
+  loading = signal(false);
 
-  trailerTypes: { value: CreateTrailerDto['trailerType']; label: string; icon: string }[] = [
+  types: { value: CreateTrailerDto['type']; label: string; icon: string }[] = [
     { value: 'Cargo',        label: 'Ładunkowa',       icon: 'inventory_2' },
     { value: 'Motorboat',    label: 'Łódź motorowa',   icon: 'sailing' },
     { value: 'Flatbed',      label: 'Platforma',       icon: 'view_agenda' },
@@ -380,7 +380,7 @@ export class AdminAddTrailerPage {
     brand:              ['', Validators.required],
     model:              ['', Validators.required],
     registrationNumber: ['', Validators.required],
-    trailerType:        ['', Validators.required],
+    type:               ['', Validators.required],
     loadCapacity:       [null, [Validators.required, Validators.min(1)]],
     pricePerDay:        [null, [Validators.required, Validators.min(1)]],
     description:        ['', Validators.maxLength(500)],
@@ -392,7 +392,7 @@ export class AdminAddTrailerPage {
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
     const dto: CreateTrailerDto = this.form.getRawValue();
 
     this.trailersService.create(dto).subscribe({
@@ -404,7 +404,7 @@ export class AdminAddTrailerPage {
         this.router.navigate(['/admin/trailers']);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.snackBar.open('Wystąpił błąd podczas dodawania przyczepy.', 'Zamknij', {
           duration: 5000,
           panelClass: ['snack-error'],

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { CommonModule } from '@angular/common';
-import { CreateTrailerDto } from '../../models/models';
+import { CreateTrailerDto, UpdateTrailerDto } from '../../models/models';
 import { TrailersService } from '../../services/trailers.service';
 
 @Component({
@@ -92,8 +92,8 @@ import { TrailersService } from '../../services/trailers.service';
 
               <mat-form-field appearance="outline">
                 <mat-label>Typ przyczepy</mat-label>
-                <mat-select formControlName="trailerType">
-                  @for (type of trailerTypes; track type.value) {
+                <mat-select formControlName="type">
+                  @for (type of types; track type.value) {
                     <mat-option [value]="type.value">
                       <span class="type-option">
                         {{ type.label }}
@@ -101,11 +101,26 @@ import { TrailersService } from '../../services/trailers.service';
                     </mat-option>
                   }
                 </mat-select>
-                @if (form.get('trailerType')?.hasError('required') && form.get('trailerType')?.touched) {
+                @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
                   <mat-error>Typ przyczepy jest wymagany</mat-error>
                 }
               </mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>Status</mat-label>
 
+  <mat-select formControlName="status">
+    @for (status of statuses; track status.value) {
+      <mat-option [value]="status.value">
+        {{ status.label }}
+      </mat-option>
+    }
+  </mat-select>
+
+  @if (form.get('status')?.hasError('required') &&
+       form.get('status')?.touched) {
+    <mat-error>Status jest wymagany</mat-error>
+  }
+</mat-form-field>
             </div>
           </section>
 
@@ -177,7 +192,7 @@ import { TrailersService } from '../../services/trailers.service';
 
           <!-- Actions -->
           <div class="form-actions">
-            <button mat-stroked-button type="button" (click)="goBack()" [disabled]="loading">
+            <button mat-stroked-button type="button" (click)="goBack()" [disabled]="loading()">
               <mat-icon>close</mat-icon>
               Anuluj
             </button>
@@ -185,9 +200,9 @@ import { TrailersService } from '../../services/trailers.service';
               mat-flat-button
               type="submit"
               class="submit-btn"
-              [disabled]="loading || form.invalid"
+              [disabled]="loading() || form.invalid"
             >
-              @if (loading) {
+              @if (loading()) {
                 <mat-spinner diameter="18" color="accent" />
                 Zapisywanie...
               } @else {
@@ -366,9 +381,9 @@ export class AdminEditTrailerPage {
   private router = inject(Router);
   private id: number = 0;
 
-  loading = false;
+  loading = signal(false);
 
-  trailerTypes: { value: CreateTrailerDto['trailerType']; label: string; icon: string }[] = [
+  types: { value: UpdateTrailerDto['type']; label: string; icon: string }[] = [
     { value: 'Cargo',        label: 'Ładunkowa',       icon: 'inventory_2' },
     { value: 'Motorboat',    label: 'Łódź motorowa',   icon: 'sailing' },
     { value: 'Flatbed',      label: 'Platforma',       icon: 'view_agenda' },
@@ -376,11 +391,19 @@ export class AdminEditTrailerPage {
     { value: 'Other',        label: 'Inna',            icon: 'more_horiz' },
   ];
 
+  statuses: { value: UpdateTrailerDto['status']; label: string; icon: string }[] = [
+    { value: 'Dostepna', label: 'Dostępna', icon: 'check_circle' },
+    /*{ value: 'Wypozyczona', label: 'Wypożyczona', icon: 'event_busy' },*/
+    { value: 'WSerwisie', label: 'W serwisie', icon: 'build' },
+    { value: 'Wycofana', label: 'Wycofana', icon: 'block' },
+  ];
+
   form: FormGroup = this.fb.group({
     brand:              ['', Validators.required],
     model:              ['', Validators.required],
     registrationNumber: ['', Validators.required],
-    trailerType:        ['', Validators.required],
+    type:               ['', Validators.required],
+    status:             ['', Validators.required],
     loadCapacity:       [null, [Validators.required, Validators.min(1)]],
     pricePerDay:        [null, [Validators.required, Validators.min(1)]],
     description:        ['', Validators.maxLength(500)],
@@ -395,7 +418,7 @@ export class AdminEditTrailerPage {
     this.id = parseInt(id);
     this.trailersService.getById(this.id).subscribe(trailer => {
       this.form.patchValue(trailer);
-      this.form.get('trailerType')?.setValue(this.trailerTypes.find(x=>x.value == trailer.type)?.value)
+      this.form.get('type')?.setValue(this.types.find(x=>x.value == trailer.type)?.value)
     });
   }
 
@@ -405,7 +428,7 @@ export class AdminEditTrailerPage {
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
     const dto: CreateTrailerDto = this.form.getRawValue();
 
     this.trailersService.update(this.id, dto).subscribe({
@@ -417,7 +440,7 @@ export class AdminEditTrailerPage {
         this.router.navigate(['/admin/trailers']);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.snackBar.open('Wystąpił błąd podczas edycji przyczepy.', 'Zamknij', {
           duration: 5000,
           panelClass: ['snack-error'],

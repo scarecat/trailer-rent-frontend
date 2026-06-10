@@ -74,6 +74,13 @@ const TYPE_META: Record<string, { label: string; icon: string; color: string }> 
   Other:        { label: 'Inna',          icon: 'more_horiz',   color: '#4E342E' },
 };
 
+const STATUS_META: Record<string, { label: string; icon: string; color: string }> = {
+  Dostepna:    { label: 'Dostępna',    icon: 'check_circle', color: '#2E7D32' },
+  Wypozyczona: { label: 'Wypożyczona', icon: 'event_busy',   color: '#EF6C00' },
+  WSerwisie:   { label: 'W serwisie',  icon: 'build',        color: '#1565C0' },
+  Wycofana:    { label: 'Wycofana',    icon: 'block',        color: '#C62828' },
+};
+
 /* ─── Main page ──────────────────────────────────────────────── */
 @Component({
   selector: 'app-admin-trailers-page',
@@ -187,12 +194,13 @@ const TYPE_META: Record<string, { label: string; icon: string; color: string }> 
           <table class="trailers-table">
             <thead>
               <tr>
-                <th>Pojazd</th>
-                <th>Nr rejestracyjny</th>
-                <th>Typ</th>
-                <th class="num-col">Ładowność</th>
-                <th class="num-col">Cena / dzień</th>
-                <th class="actions-col">Akcje</th>
+              <th>Pojazd</th>
+              <th>Nr rejestracyjny</th>
+              <th>Typ</th>
+              <th>Status</th>
+              <th class="num-col">Ładowność</th>
+              <th class="num-col">Cena / dzień</th>
+              <th class="actions-col">Akcje</th>
               </tr>
             </thead>
             <tbody>
@@ -212,7 +220,12 @@ const TYPE_META: Record<string, { label: string; icon: string; color: string }> 
                       <mat-icon class="chip-icon">{{ typeMeta(trailer.type).icon }}</mat-icon>
                       {{ typeMeta(trailer.type).label }}
                     </span>
-                  </td>
+                  </td><td>
+  <span class="status-chip" [style.--chip-color]="statusMeta(trailer.status).color">
+    <mat-icon class="chip-icon">{{ statusMeta(trailer.status).icon }}</mat-icon>
+    {{ statusMeta(trailer.status).label }}
+  </span>
+</td>
                   <td class="num-col">
                     <span class="num-value">{{ trailer.loadCapacity | number:'1.0-0' }}</span>
                     <span class="num-unit">kg</span>
@@ -483,6 +496,10 @@ export class AdminTrailersPage implements OnInit {
 
   typeMeta(type: string) {
     return TYPE_META[type] ?? TYPE_META['Other'];
+  }
+
+  statusMeta(status: string) {
+    return STATUS_META[status] ?? STATUS_META['Dostepna'];
   }
 
   ngOnInit(): void {
