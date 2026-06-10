@@ -10,8 +10,9 @@ import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { MyRentalsPage } from './pages/my-rentals.page/my-rentals.page';
 import { AdminRentalsPage } from './pages/admin-rentals.page/admin-rentals.page';
-import { AdminUsersPage } from './pages/admin-users.page/admin-users.page';
 import { ProfilePage } from './pages/profile.page/profile.page';
+import { AdminClientsPage } from './pages/admin-clients.page/admin-clients.page';
+import { AdminEmployeesPage } from './pages/admin-employees.page/admin-employees.page';
 
 export const routes: Routes = [
   {
@@ -71,8 +72,12 @@ export const routes: Routes = [
         component: AdminRentalsPage,
       },
       {
-        path: 'users',
-        component: AdminUsersPage,
+        path: 'clients',
+        component: AdminClientsPage,
+      },
+      {
+        path: 'employees',
+        component: AdminEmployeesPage,
       },
     ],
   },

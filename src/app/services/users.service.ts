@@ -13,7 +13,12 @@ export class UsersService {
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(this.url);
   }
-
+  getAllClients(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/clients`);
+  }
+  getAllEmployees(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.url}/employees`);
+  }
   block(id: number): Observable<void> {
     return this.http.post<void>(`${this.url}/${id}/block`, {});
   }

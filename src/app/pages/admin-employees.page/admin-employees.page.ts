@@ -12,13 +12,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { User } from '../../models/models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-admin-users',
+  selector: 'app-admin-employees',
   standalone: true,
   imports: [
     CommonModule,
@@ -32,13 +32,17 @@ import { finalize } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
+    RouterLink
   ],
   template: `
     <div class="container">
       <!-- Header -->
+      <div style="display: flex; flex-direction: row; justify-content: space-between">
       <div class="header">
-        <h1>Użytkownicy</h1>
-        <p>Zarządzanie kontami użytkowników</p>
+        <h1>Pracownicy</h1>
+        <p>Zarządzanie kontami pracowników</p>
+      </div>
+      <button mat-raised-button routerLink="/admin/add-employee"> Dodaj pracownika </button>
       </div>
 
       <!-- Search -->
@@ -52,21 +56,6 @@ import { finalize } from 'rxjs';
         />
       </mat-form-field>
 
-      <!-- Stats -->
-      <div class="stats">
-        <mat-card>
-          <div class="stat-value">{{ users().length }}</div>
-          <div class="stat-label">Wszyscy</div>
-        </mat-card>
-        <mat-card>
-          <div class="stat-value">{{ activeCount() }}</div>
-          <div class="stat-label">Aktywni</div>
-        </mat-card>
-        <mat-card>
-          <div class="stat-value">{{ blockedCount() }}</div>
-          <div class="stat-label">Zablokowani</div>
-        </mat-card>
-      </div>
 
       <!-- Loading -->
       @if (loading()) {
@@ -94,14 +83,6 @@ import { finalize } from 'rxjs';
               <td mat-cell *matCellDef="let user">{{ user.phoneNumber }}</td>
             </ng-container>
 
-            <ng-container matColumnDef="role">
-              <th mat-header-cell *matHeaderCellDef>Rola</th>
-              <td mat-cell *matCellDef="let user">
-                <mat-chip [color]="user.role === 'Admin' ? 'primary' : ''" highlighted>
-                  {{ user.role }}
-                </mat-chip>
-              </td>
-            </ng-container>
 
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef>Status</th>
@@ -122,6 +103,9 @@ import { finalize } from 'rxjs';
                     Odblokuj
                   </button>
                 }
+                <a [routerLink]='"/admin/edit-employee/" + user.id' mat-raised-button color="primary">
+                Edytuj
+                </a>
               </td>
             </ng-container>
 
@@ -227,7 +211,7 @@ import { finalize } from 'rxjs';
     `,
   ],
 })
-export class AdminUsersPage implements OnInit {
+export class AdminEmployeesPage implements OnInit {
   private usersSvc = inject(UsersService);
   private auth = inject(AuthService);
   private router = inject(Router);
@@ -239,7 +223,7 @@ export class AdminUsersPage implements OnInit {
   public loading = signal<boolean>(false);
   public searchTerm = '';
 
-  public displayedColumns = ['fullName', 'email', 'phoneNumber', 'role', 'status', 'actions'];
+  public displayedColumns = ['fullName', 'email', 'phoneNumber', 'status', 'actions'];
 
   public activeCount = computed(() => this.users().filter((u) => u.isActive).length);
 
@@ -259,7 +243,7 @@ export class AdminUsersPage implements OnInit {
     this.loading.set(true);
 
     this.usersSvc
-      .getAll()
+      .getAllEmployees()
       .pipe(
         finalize(() => this.loading.set(false)),
         takeUntilDestroyed(this.destroyRef),

@@ -6,18 +6,34 @@
   <a
     mat-tab-link
     routerLinkActive
-    #rla="routerLinkActive"
-    routerLink="admin/users"
-    [active]="rla.isActive"
-    >Użytkownicy</a
+    #adminClientsRla="routerLinkActive"
+    routerLink="admin/clients"
+    [active]="adminClientsRla.isActive"
+    >Klienci</a
   >
   <a
     mat-tab-link
     routerLinkActive
-    #rla="routerLinkActive"
+    #adminEmployeesRla="routerLinkActive"
+    routerLink="admin/employees"
+    [active]="adminEmployeesRla.isActive"
+    >Pracownicy</a
+  >
+  <a
+    mat-tab-link
+    routerLinkActive
+    #adminRentalsRla="routerLinkActive"
     routerLink="admin/rentals"
-    [active]="rla.isActive"
+    [active]="adminRentalsRla.isActive"
     >Wypożyczenia</a
+  >
+  <a
+    mat-tab-link
+    routerLinkActive
+    #rlaprofile="routerLinkActive"
+    routerLink="/profile"
+    [active]="rlaprofile.isActive"
+    >Profil</a
   >
 </nav>
 <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
