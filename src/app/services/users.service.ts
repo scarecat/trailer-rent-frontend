@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisterDto, User } from '../models/models';
+import { RegisterDto, UpdateEmployeeDto, User } from '../models/models';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -20,7 +20,7 @@ export class UsersService {
     return this.http.get<User[]>(`${this.url}/employees`);
   }
   getById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.url}/employees/${id}`);
+    return this.http.get<User>(`${this.url}/${id}`);
   }
 
   addEmployee(dto: RegisterDto): Observable<User> {
@@ -33,5 +33,15 @@ export class UsersService {
 
   unblock(id: number): Observable<void> {
     return this.http.post<void>(`${this.url}/${id}/unblock`, {});
+  }
+
+  updateEmployee( id: number,dto: UpdateEmployeeDto): Observable<User> {
+    return this.http.put<User>(
+      `${this.url}/employee/${id}`,
+      dto
+    );
+  }
+  deleteEmployee(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/employee/${id}`);
   }
 }

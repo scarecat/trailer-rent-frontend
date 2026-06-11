@@ -12,7 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RentalsService } from '../../services/rentals.service';
 import { AuthService } from '../../services/auth.service';
@@ -235,6 +235,45 @@ export class AdminRentalsPage implements OnInit {
   public trackByRentalId(index: number, rental: Rental): number {
     return rental.id;
   }
+
+pickupRental(rental: Rental): void {
+  this.rentalsSvc
+    .registerPickup(rental.id)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: () => {
+        this.snack.open('Odbiór potwierdzony', 'OK', { duration: 4000 });
+        this.loadAllRentals();
+      },
+      error: (err) =>
+        this.snack.open(err.error?.message ?? 'Błąd odbioru', 'OK', { duration: 4000 }),
+    });
 }
 
-import { MatDialogRef } from '@angular/material/dialog';
+returnRental(rental: Rental): void {
+  this.rentalsSvc
+    .registerReturn(rental.id)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: () => {
+        this.snack.open('Zwrot potwierdzony', 'OK', { duration: 4000 });
+        this.loadAllRentals();
+      },
+      error: (err) =>
+        this.snack.open(err.error?.message ?? 'Błąd zwrotu', 'OK', { duration: 4000 }),
+    });
+}
+
+
+public canPickup(rental: Rental): boolean {
+  return rental.status === 'Zatwierdzona';
+}
+
+public canReturn(rental: Rental): boolean {
+  return rental.status === 'Aktywna';
+}
+
+}
+
+
+

@@ -17,6 +17,7 @@ import { AdminAddTrailerPage } from './pages/admin-add-trailer.page/admin-add-tr
 import { AdminTrailersPage } from './pages/admin-trailers.page/admin-trailers.page';
 import { AdminEditTrailerPage } from './pages/admin-add-trailer.page/admin-edit-trailer.page';
 import { AdminAddEmployeePage } from './pages/admin-add-employee.page/admin-add-employee.page';
+import { EditEmployeePage } from './pages/admin/edit-employee.page/edit-employee.page';
 
 export const routes: Routes = [
   {
@@ -86,6 +87,10 @@ export const routes: Routes = [
       {
         path: 'employees/add',
         component: AdminAddEmployeePage,
+      },
+      {
+        path: 'employees/:id/edit',
+        component: EditEmployeePage,
       },
       {
         path: 'trailers',

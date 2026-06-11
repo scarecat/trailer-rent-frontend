@@ -93,6 +93,13 @@ import { finalize } from 'rxjs';
               </td>
             </ng-container>
 
+            <ng-container matColumnDef="salary">
+              <th mat-header-cell *matHeaderCellDef>Premia za wypożyczenie</th>
+              <td mat-cell *matCellDef="let user">
+                {{user.salary}}
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let user">
@@ -103,7 +110,7 @@ import { finalize } from 'rxjs';
                     Odblokuj
                   </button>
                 }
-                <a [routerLink]='"/admin/edit-employee/" + user.id' mat-raised-button color="primary">
+                <a [routerLink]='"/admin/employees/" + user.id + "/edit"' mat-raised-button color="primary">
                 Edytuj
                 </a>
               </td>
@@ -223,7 +230,7 @@ export class AdminEmployeesPage implements OnInit {
   public loading = signal<boolean>(false);
   public searchTerm = '';
 
-  public displayedColumns = ['fullName', 'email', 'phoneNumber', 'status', 'actions'];
+  public displayedColumns = ['fullName', 'email', 'phoneNumber', 'status', 'salary', 'actions'];
 
   public activeCount = computed(() => this.users().filter((u) => u.isActive).length);
 

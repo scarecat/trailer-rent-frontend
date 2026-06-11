@@ -6,12 +6,16 @@ import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class RentalsService {
-  private url = `${environment.apiUrl}/rentals`;
+  private readonly url = `${environment.apiUrl}/rentals`;
 
   constructor(private http: HttpClient) {}
 
   create(dto: CreateRentalDto): Observable<Rental> {
     return this.http.post<Rental>(this.url, dto);
+  }
+
+  getById(id: number): Observable<Rental> {
+    return this.http.get<Rental>(`${this.url}/${id}`);
   }
 
   getMy(): Observable<Rental[]> {
@@ -27,12 +31,21 @@ export class RentalsService {
   }
 
   reject(id: number, note?: string): Observable<void> {
-    return this.http.post<void>(`${this.url}/${id}/reject`, note ? JSON.stringify(note) : null, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return this.http.post<void>(
+      `${this.url}/${id}/reject`,
+      note ?? null,
+    );
   }
 
   cancel(id: number): Observable<void> {
     return this.http.post<void>(`${this.url}/${id}/cancel`, {});
+  }
+
+  registerPickup(id: number): Observable<void> {
+    return this.http.post<void>(`${this.url}/${id}/pickup`, {});
+  }
+
+  registerReturn(id: number): Observable<void> {
+    return this.http.post<void>(`${this.url}/${id}/return`, {});
   }
 }

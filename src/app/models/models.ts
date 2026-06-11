@@ -87,5 +87,15 @@ export interface User {
   phoneNumber: string;
   role: string;
   isActive: boolean;
+  salary?: number;
   createdAt: string;
+}
+
+export interface UpdateEmployeeDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  salary: number;
+  password?: string;
 }
