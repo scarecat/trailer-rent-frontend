@@ -26,8 +26,134 @@ import { UsersService } from '../../../services/users.service';
     MatProgressSpinnerModule,
     MatSnackBarModule,
   ],
-  templateUrl: './edit-employee.page.html',
-  styleUrls: ['./edit-employee.page.scss'],
+  template: `
+<mat-card class="auth-card" style="margin: auto">
+  <mat-card-header>
+    <mat-card-title>Edytuj pracownika</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row-two">
+        <mat-form-field appearance="outline">
+          <mat-label>Imię</mat-label>
+          <input matInput formControlName="firstName" />
+          @if (form.get('firstName')?.hasError('required')) {
+            <mat-error>Wymagane</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nazwisko</mat-label>
+          <input matInput formControlName="lastName" />
+          @if (form.get('lastName')?.hasError('required')) {
+            <mat-error>Wymagane</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+        @if (form.get('email')?.hasError('required')) {
+          <mat-error>Wymagane</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Niepoprawny email</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Numer telefonu</mat-label>
+        <input matInput formControlName="phoneNumber" />
+        @if (form.get('phoneNumber')?.hasError('required')) {
+          <mat-error>Wymagane</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Wynagrodzenie</mat-label>
+        <input matInput type="number" formControlName="salary" />
+        @if (form.get('salary')?.hasError('required')) {
+          <mat-error>Wymagane</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nowe hasło (opcjonalnie)</mat-label>
+        <input matInput type="password" formControlName="password" />
+        <mat-hint>Zostaw puste, jeśli nie zmieniasz hasła</mat-hint>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="full-width"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px"></mat-spinner>
+        }
+        Zapisz zmiany
+      </button>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      (click)="onRemoveProfileClick()"
+      mat-raised-button
+      color="warn"
+      type="button"
+      class="full-width"
+    >
+      Usuń pracownika
+    </button>
+  </mat-card-actions>
+</mat-card>
+`,
+  styles: `
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.center-text {
+  text-align: center;
+  width: 100%;
+  margin: 8px 0 0;
+}
+
+mat-card-header {
+  margin-bottom: 16px;
+}
+  `
 })
 export class EditEmployeePage {
   private fb = inject(FormBuilder);
@@ -80,7 +206,7 @@ export class EditEmployeePage {
 
         this.snack.open('Dane pracownika zostały zapisane', 'OK', { duration: 4000 });
 
-        this.router.navigate(['/employees']);
+        this.router.navigate(['/admin/employees']);
       },
       error: (err) => {
         this.loading.set(false);

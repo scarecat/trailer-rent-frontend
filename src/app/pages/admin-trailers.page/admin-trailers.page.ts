@@ -269,7 +269,7 @@ const STATUS_META: Record<string, { label: string; icon: string; color: string }
                         mat-icon-button
                         matTooltip="Edytuj"
                         (click)="goToEdit(trailer.id)"
-                        [disabled]="deletingId() === trailer.id"
+                        [disabled]="deletingId() === trailer.id || trailer.status == 'Wypozyczona'"
                       >
                         <mat-icon>edit</mat-icon>
                       </button>
@@ -278,7 +278,7 @@ const STATUS_META: Record<string, { label: string; icon: string; color: string }
                         class="delete-btn"
                         matTooltip="Usuń"
                         (click)="confirmDelete(trailer)"
-                        [disabled]="deletingId() === trailer.id"
+                        [disabled]="deletingId() === trailer.id || trailer.status == 'Wypozyczona'"
                       >
                         @if (deletingId() === trailer.id) {
                           <mat-spinner diameter="20" />
@@ -515,7 +515,7 @@ const STATUS_META: Record<string, { label: string; icon: string; color: string }
         gap: 4px;
       }
       .delete-btn {
-        color: var(--mat-sys-error) !important;
+        color: var(--mat-sys-error);
       }
 
       /* Responsive */

@@ -75,7 +75,9 @@ export class AuthService {
       }),
     );
   }
-
+  changePassword(dto: { currentPassword: string; newPassword: string }): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/change-password`, dto);
+  }
   private setSession(res: AuthResponse | null): void {
     this.userSignal.set(res);
   }

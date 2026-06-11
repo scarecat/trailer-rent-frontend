@@ -47,7 +47,8 @@ export class LoginComponent {
     if (this.form.invalid) return;
     this.loading.set(true);
     this.auth.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/trailers']),
+
+      next: () => this.router.navigate(['/']),
       error: (err) => {
         this.loading.set(false);
         this.snack.open(err.error?.message || 'Nieprawidłowe dane logowania', 'OK', {

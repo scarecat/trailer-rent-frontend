@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { loggedInGuard } from './guards/logged-in-guard';
-import { HomePage } from './pages/home.page/home.page';
 import { LoginPage } from './pages/login.page/login.page';
 import { RegisterPage } from './pages/register.page/register.page';
 import { TrailerPage } from './pages/trailer.page/trailer.page';
@@ -18,13 +17,14 @@ import { AdminTrailersPage } from './pages/admin-trailers.page/admin-trailers.pa
 import { AdminEditTrailerPage } from './pages/admin-add-trailer.page/admin-edit-trailer.page';
 import { AdminAddEmployeePage } from './pages/admin-add-employee.page/admin-add-employee.page';
 import { EditEmployeePage } from './pages/admin/edit-employee.page/edit-employee.page';
+import { redirectLoginGuard } from './guards/redirect-login-guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    canActivate: [loggedInGuard],
-    component: HomePage,
+    canActivate: [loggedInGuard, redirectLoginGuard],
+    component: TrailerPage
   },
   {
     path: 'login',
