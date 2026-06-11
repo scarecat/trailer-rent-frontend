@@ -236,44 +236,39 @@ export class AdminRentalsPage implements OnInit {
     return rental.id;
   }
 
-pickupRental(rental: Rental): void {
-  this.rentalsSvc
-    .registerPickup(rental.id)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: () => {
-        this.snack.open('Odbiór potwierdzony', 'OK', { duration: 4000 });
-        this.loadAllRentals();
-      },
-      error: (err) =>
-        this.snack.open(err.error?.message ?? 'Błąd odbioru', 'OK', { duration: 4000 }),
-    });
+  pickupRental(rental: Rental): void {
+    this.rentalsSvc
+      .registerPickup(rental.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.snack.open('Odbiór potwierdzony', 'OK', { duration: 4000 });
+          this.loadAllRentals();
+        },
+        error: (err) =>
+          this.snack.open(err.error?.message ?? 'Błąd odbioru', 'OK', { duration: 4000 }),
+      });
+  }
+
+  returnRental(rental: Rental): void {
+    this.rentalsSvc
+      .registerReturn(rental.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.snack.open('Zwrot potwierdzony', 'OK', { duration: 4000 });
+          this.loadAllRentals();
+        },
+        error: (err) =>
+          this.snack.open(err.error?.message ?? 'Błąd zwrotu', 'OK', { duration: 4000 }),
+      });
+  }
+
+  public canPickup(rental: Rental): boolean {
+    return rental.status === 'Zatwierdzona';
+  }
+
+  public canReturn(rental: Rental): boolean {
+    return rental.status === 'Aktywna';
+  }
 }
-
-returnRental(rental: Rental): void {
-  this.rentalsSvc
-    .registerReturn(rental.id)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: () => {
-        this.snack.open('Zwrot potwierdzony', 'OK', { duration: 4000 });
-        this.loadAllRentals();
-      },
-      error: (err) =>
-        this.snack.open(err.error?.message ?? 'Błąd zwrotu', 'OK', { duration: 4000 }),
-    });
-}
-
-
-public canPickup(rental: Rental): boolean {
-  return rental.status === 'Zatwierdzona';
-}
-
-public canReturn(rental: Rental): boolean {
-  return rental.status === 'Aktywna';
-}
-
-}
-
-
-

@@ -37,11 +37,11 @@ import { finalize } from 'rxjs';
     <div class="container">
       <!-- Header -->
       <div style="display: flex; flex-direction: row; justify-content: space-between">
-      <div class="header">
-        <h1>Klienci</h1>
-        <p>Zarządzanie kontami klientów</p>
-      </div>
-      <button mat-raised-button routerLink="/admin/add-employee"> Dodaj pracownika </button>
+        <div class="header">
+          <h1>Klienci</h1>
+          <p>Zarządzanie kontami klientów</p>
+        </div>
+        <button mat-raised-button routerLink="/admin/add-employee">Dodaj pracownika</button>
       </div>
 
       <!-- Search -->
@@ -96,7 +96,6 @@ import { finalize } from 'rxjs';
               <th mat-header-cell *matHeaderCellDef>Telefon</th>
               <td mat-cell *matCellDef="let user">{{ user.phoneNumber }}</td>
             </ng-container>
-
 
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef>Status</th>

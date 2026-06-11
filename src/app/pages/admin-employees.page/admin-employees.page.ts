@@ -32,17 +32,17 @@ import { finalize } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
-    RouterLink
+    RouterLink,
   ],
   template: `
     <div class="container">
       <!-- Header -->
       <div style="display: flex; flex-direction: row; justify-content: space-between">
-      <div class="header">
-        <h1>Pracownicy</h1>
-        <p>Zarządzanie kontami pracowników</p>
-      </div>
-      <button mat-raised-button routerLink="/admin/employees/add"> Dodaj pracownika </button>
+        <div class="header">
+          <h1>Pracownicy</h1>
+          <p>Zarządzanie kontami pracowników</p>
+        </div>
+        <button mat-raised-button routerLink="/admin/employees/add">Dodaj pracownika</button>
       </div>
 
       <!-- Search -->
@@ -55,7 +55,6 @@ import { finalize } from 'rxjs';
           placeholder="Imię, nazwisko lub email"
         />
       </mat-form-field>
-
 
       <!-- Loading -->
       @if (loading()) {
@@ -83,7 +82,6 @@ import { finalize } from 'rxjs';
               <td mat-cell *matCellDef="let user">{{ user.phoneNumber }}</td>
             </ng-container>
 
-
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef>Status</th>
               <td mat-cell *matCellDef="let user">
@@ -96,7 +94,7 @@ import { finalize } from 'rxjs';
             <ng-container matColumnDef="salary">
               <th mat-header-cell *matHeaderCellDef>Premia za wypożyczenie</th>
               <td mat-cell *matCellDef="let user">
-                {{user.salary}}
+                {{ user.salary }}
               </td>
             </ng-container>
 
@@ -110,8 +108,12 @@ import { finalize } from 'rxjs';
                     Odblokuj
                   </button>
                 }
-                <a [routerLink]='"/admin/employees/" + user.id + "/edit"' mat-raised-button color="primary">
-                Edytuj
+                <a
+                  [routerLink]="'/admin/employees/' + user.id + '/edit'"
+                  mat-raised-button
+                  color="primary"
+                >
+                  Edytuj
                 </a>
               </td>
             </ng-container>

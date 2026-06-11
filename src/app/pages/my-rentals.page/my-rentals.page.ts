@@ -148,18 +148,18 @@ export class MyRentalsPage {
       });
   }
 
-public canCancel(rental: Rental): boolean {
-  const cancelableStatuses: RentalStatus[] = ['Oczekujaca', 'Odrzucona'];
-  if (!cancelableStatuses.includes(rental.status)) { return false; }
-  const startDate = new Date(rental.startDate);
-  const utcNow = new Date();
+  public canCancel(rental: Rental): boolean {
+    const cancelableStatuses: RentalStatus[] = ['Oczekujaca', 'Odrzucona'];
+    if (!cancelableStatuses.includes(rental.status)) {
+      return false;
+    }
+    const startDate = new Date(rental.startDate);
+    const utcNow = new Date();
 
-  const twentyFourHoursAfterStart = new Date(
-    startDate.getTime() + 24 * 60 * 60 * 1000
-  );
+    const twentyFourHoursAfterStart = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
 
-  return utcNow <= twentyFourHoursAfterStart;
-}
+    return utcNow <= twentyFourHoursAfterStart;
+  }
   public getStatusColor(status: RentalStatus | 'ALL'): string {
     const statusMap: Record<RentalStatus | 'ALL', string> = {
       ALL: '',

@@ -1,11 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -58,17 +53,17 @@ export class EditEmployeePage {
     this.employeeId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.usersService
-    .getById(this.employeeId)
-    .pipe(takeUntilDestroyed())
-    .subscribe((employee) => {
-      this.form.patchValue({
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        email: employee.email,
-        phoneNumber: employee.phoneNumber,
-        salary: employee.salary,
+      .getById(this.employeeId)
+      .pipe(takeUntilDestroyed())
+      .subscribe((employee) => {
+        this.form.patchValue({
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          email: employee.email,
+          phoneNumber: employee.phoneNumber,
+          salary: employee.salary,
+        });
       });
-    });
   }
 
   submit(): void {
@@ -79,35 +74,27 @@ export class EditEmployeePage {
 
     this.loading.set(true);
 
-    this.usersService
-    .updateEmployee(this.employeeId, this.form.getRawValue())
-    .subscribe({
+    this.usersService.updateEmployee(this.employeeId, this.form.getRawValue()).subscribe({
       next: () => {
         this.loading.set(false);
 
-        this.snack.open(
-          'Dane pracownika zostały zapisane',
-          'OK',
-          { duration: 4000 }
-        );
+        this.snack.open('Dane pracownika zostały zapisane', 'OK', { duration: 4000 });
 
         this.router.navigate(['/employees']);
       },
       error: (err) => {
         this.loading.set(false);
 
-        this.snack.open(
-          err.error?.message ?? 'Nie udało się zapisać zmian',
-          'OK',
-          { duration: 4000 }
-        );
+        this.snack.open(err.error?.message ?? 'Nie udało się zapisać zmian', 'OK', {
+          duration: 4000,
+        });
       },
     });
   }
 
   onRemoveProfileClick(): void {
     const confirmed = confirm(
-      'Czy na pewno chcesz usunąć tego pracownika? Tej operacji nie można cofnąć.'
+      'Czy na pewno chcesz usunąć tego pracownika? Tej operacji nie można cofnąć.',
     );
 
     if (!confirmed) {
@@ -116,31 +103,21 @@ export class EditEmployeePage {
 
     this.loading.set(true);
 
-    this.usersService
-    .deleteEmployee(this.employeeId)
-    .subscribe({
+    this.usersService.deleteEmployee(this.employeeId).subscribe({
       next: () => {
         this.loading.set(false);
 
-        this.snack.open(
-          'Pracownik został usunięty',
-          'OK',
-          { duration: 4000 }
-        );
+        this.snack.open('Pracownik został usunięty', 'OK', { duration: 4000 });
 
         this.router.navigate(['/admin/employees']);
       },
       error: (err) => {
         this.loading.set(false);
 
-        this.snack.open(
-          err.error?.message ?? 'Nie udało się usunąć pracownika',
-          'OK',
-          { duration: 4000 }
-        );
+        this.snack.open(err.error?.message ?? 'Nie udało się usunąć pracownika', 'OK', {
+          duration: 4000,
+        });
       },
     });
   }
-
-
 }

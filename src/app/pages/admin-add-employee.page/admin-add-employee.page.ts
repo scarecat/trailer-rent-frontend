@@ -10,7 +10,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UsersService } from '../../services/users.service';
 
-
 @Component({
   selector: 'app-admin-add-employee.page',
   imports: [
@@ -26,80 +25,84 @@ import { UsersService } from '../../services/users.service';
   ],
   styleUrls: ['./admin-add-employee.page.scss'],
   template: `
-<div class="auth-wrapper">
-  <mat-card class="auth-card">
-    <mat-card-header>
-      <mat-card-title>Rejestracja pracownika</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="row-two">
-          <mat-form-field appearance="outline">
-            <mat-label>Imie</mat-label>
-            <input matInput formControlName="firstName" />
-            @if (form.get('firstName')?.hasError('required')) {
-              <mat-error>Wymagane</mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Nazwisko</mat-label>
-            <input matInput formControlName="lastName" />
-            @if (form.get('lastName')?.hasError('required')) {
-              <mat-error>Wymagane</mat-error>
-            }
-          </mat-form-field>
-        </div>
+    <div class="auth-wrapper">
+      <mat-card class="auth-card">
+        <mat-card-header>
+          <mat-card-title>Rejestracja pracownika</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="row-two">
+              <mat-form-field appearance="outline">
+                <mat-label>Imie</mat-label>
+                <input matInput formControlName="firstName" />
+                @if (form.get('firstName')?.hasError('required')) {
+                  <mat-error>Wymagane</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Nazwisko</mat-label>
+                <input matInput formControlName="lastName" />
+                @if (form.get('lastName')?.hasError('required')) {
+                  <mat-error>Wymagane</mat-error>
+                }
+              </mat-form-field>
+            </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>E-mail</mat-label>
-          <input matInput type="email" formControlName="email" autocomplete="email" />
-          @if (form.get('email')?.hasError('required')) {
-            <mat-error>Wymagane</mat-error>
-          }
-          @if (form.get('email')?.hasError('email')) {
-            <mat-error>Nieprawidlowy e-mail</mat-error>
-          }
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>E-mail</mat-label>
+              <input matInput type="email" formControlName="email" autocomplete="email" />
+              @if (form.get('email')?.hasError('required')) {
+                <mat-error>Wymagane</mat-error>
+              }
+              @if (form.get('email')?.hasError('email')) {
+                <mat-error>Nieprawidlowy e-mail</mat-error>
+              }
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Haslo</mat-label>
-          <input matInput type="password" formControlName="password" autocomplete="new-password" />
-          @if (form.get('password')?.hasError('required')) {
-            <mat-error>Wymagane</mat-error>
-          }
-          @if (form.get('password')?.hasError('minlength')) {
-            <mat-error>Minimum 6 znakow</mat-error>
-          }
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Haslo</mat-label>
+              <input
+                matInput
+                type="password"
+                formControlName="password"
+                autocomplete="new-password"
+              />
+              @if (form.get('password')?.hasError('required')) {
+                <mat-error>Wymagane</mat-error>
+              }
+              @if (form.get('password')?.hasError('minlength')) {
+                <mat-error>Minimum 6 znakow</mat-error>
+              }
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Numer telefonu</mat-label>
-          <input matInput formControlName="phoneNumber" />
-          @if (form.get('phoneNumber')?.hasError('required')) {
-            <mat-error>Wymagane</mat-error>
-          }
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Numer telefonu</mat-label>
+              <input matInput formControlName="phoneNumber" />
+              @if (form.get('phoneNumber')?.hasError('required')) {
+                <mat-error>Wymagane</mat-error>
+              }
+            </mat-form-field>
 
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          class="full-width"
-          [disabled]="loading()"
-        >
-          @if (loading()) {
-            <mat-spinner
-              diameter="20"
-              style="display: inline-block; margin-right: 8px"
-            ></mat-spinner>
-          }
-          Zarejestruj pracownika
-        </button>
-      </form>
-    </mat-card-content>
-  </mat-card>
-</div>
-
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="full-width"
+              [disabled]="loading()"
+            >
+              @if (loading()) {
+                <mat-spinner
+                  diameter="20"
+                  style="display: inline-block; margin-right: 8px"
+                ></mat-spinner>
+              }
+              Zarejestruj pracownika
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
   `,
 })
 export class AdminAddEmployeePage {
@@ -112,7 +115,6 @@ export class AdminAddEmployeePage {
     private router: Router,
     private snack: MatSnackBar,
   ) {
-
     this.form = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(100)]],
       lastName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -134,5 +136,3 @@ export class AdminAddEmployeePage {
     });
   }
 }
-
-

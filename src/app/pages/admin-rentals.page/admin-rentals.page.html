@@ -96,39 +96,31 @@
             </div>
           </mat-card-content>
 
+          <!-- Actions -->
+          <mat-card-actions align="end" class="card-actions">
+            @if (canApprove(rental)) {
+              <button mat-raised-button color="primary" (click)="approveRental(rental)">
+                Zatwierdź
+              </button>
+            }
 
-<!-- Actions -->
-<mat-card-actions align="end" class="card-actions">
+            @if (canReject(rental)) {
+              <button mat-raised-button color="warn" (click)="rejectRental(rental)">Odrzuć</button>
+            }
 
-  @if (canApprove(rental)) {
-    <button mat-raised-button color="primary" (click)="approveRental(rental)">
-      Zatwierdź
-    </button>
-  }
+            @if (canPickup(rental)) {
+              <button mat-raised-button color="accent" (click)="pickupRental(rental)">
+                Potwierdź odbiór
+              </button>
+            }
 
-  @if (canReject(rental)) {
-    <button mat-raised-button color="warn" (click)="rejectRental(rental)">
-      Odrzuć
-    </button>
-  }
-
-  @if (canPickup(rental)) {
-    <button mat-raised-button color="accent" (click)="pickupRental(rental)">
-      Potwierdź odbiór
-    </button>
-  }
-
-  @if (canReturn(rental)) {
-    <button mat-raised-button color="primary" (click)="returnRental(rental)">
-      Potwierdź zwrot
-    </button>
-  }
-
-</mat-card-actions>
-
-
+            @if (canReturn(rental)) {
+              <button mat-raised-button color="primary" (click)="returnRental(rental)">
+                Potwierdź zwrot
+              </button>
+            }
+          </mat-card-actions>
         </mat-card>
-
       }
     </div>
   }

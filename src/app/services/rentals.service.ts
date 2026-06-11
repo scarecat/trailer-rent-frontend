@@ -31,10 +31,7 @@ export class RentalsService {
   }
 
   reject(id: number, note?: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.url}/${id}/reject`,
-      note ?? null,
-    );
+    return this.http.post<void>(`${this.url}/${id}/reject`, note ?? null);
   }
 
   cancel(id: number): Observable<void> {

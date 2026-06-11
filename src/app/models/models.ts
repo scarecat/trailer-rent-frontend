@@ -31,7 +31,7 @@ export interface Trailer {
   registrationNumber: string;
   loadCapacity: number;
   pricePerDay: number;
-  status: "Dostepna" | "Wypozyczona" | "WSerwisie" | "Wycofana";
+  status: 'Dostepna' | 'Wypozyczona' | 'WSerwisie' | 'Wycofana';
   type: string;
   description?: string;
   createdAt: string;
@@ -51,27 +51,25 @@ export interface Rental {
 }
 
 export interface CreateTrailerDto {
-   brand: string,
-   model: string,
-   registrationNumber: string,
-   loadCapacity: number,
-   pricePerDay: number,
-   type: "Cargo" | "Motorboat" | "Flatbed" | "Refrigerated" | "Other"
-   description?: string
+  brand: string;
+  model: string;
+  registrationNumber: string;
+  loadCapacity: number;
+  pricePerDay: number;
+  type: 'Cargo' | 'Motorboat' | 'Flatbed' | 'Refrigerated' | 'Other';
+  description?: string;
 }
 
 export interface UpdateTrailerDto {
-   brand: string,
-   model: string,
-   registrationNumber: string,
-   loadCapacity: number,
-   pricePerDay: number,
-   status: "Dostepna" | "Wypozyczona" | "WSerwisie" | "Wycofana",
-   type: "Cargo" | "Motorboat" | "Flatbed" | "Refrigerated" | "Other",
-   description?: string
+  brand: string;
+  model: string;
+  registrationNumber: string;
+  loadCapacity: number;
+  pricePerDay: number;
+  status: 'Dostepna' | 'Wypozyczona' | 'WSerwisie' | 'Wycofana';
+  type: 'Cargo' | 'Motorboat' | 'Flatbed' | 'Refrigerated' | 'Other';
+  description?: string;
 }
-
-
 
 export interface CreateRentalDto {
   trailerId: number;

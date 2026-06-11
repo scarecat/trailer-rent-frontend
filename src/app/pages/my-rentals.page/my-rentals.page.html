@@ -179,8 +179,8 @@
           </mat-card-content>
 
           <mat-card-actions align="end">
-          <!-- Card Actions -->
-          @if (canCancel(rental)) {
+            <!-- Card Actions -->
+            @if (canCancel(rental)) {
               <button
                 mat-stroked-button
                 color="warn"
@@ -190,8 +190,8 @@
                 <mat-icon>cancel</mat-icon>
                 Anuluj
               </button>
-          }
-          <!--
+            }
+            <!--
           @if (isActive(rental)) {
               @if (trailerPickedUp(rental)) {
               <button
